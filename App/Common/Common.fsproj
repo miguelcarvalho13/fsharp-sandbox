@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
+    <Compile Include="Ecs/Ecs.fs" />
+    <Compile Include="Ecs/Component/Helper.fs" />
+    <Compile Include="Game/Component/Components.fs" />
+    <Compile Include="Game/System/MovementSystem.fs" />
+    <Compile Include="Game/Game.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
 </Project>
