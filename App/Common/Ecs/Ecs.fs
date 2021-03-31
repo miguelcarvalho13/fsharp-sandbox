@@ -7,19 +7,25 @@ module Ecs =
 
     type EntityId = EntityId of int
 
-    type SystemUpdate = Update of (float -> Map<EntityId, List<IComponent>> -> Map<EntityId, List<IComponent>>)
+    type SystemUpdate =
+        | UpdateEntities of (float -> Map<EntityId, List<IComponent>> -> Map<EntityId, List<IComponent>>)
+        | UpdateWorld of (float -> World -> World)
 
-    type World =
+    and World =
         { entities: Map<EntityId, List<IComponent>>
           systems: List<SystemUpdate> }
 
     let concatMap a b =
         Map.fold (fun acc key value -> Map.add key value acc) a b
 
-    let runSystem dt entities system =
+    let runSystem dt world system =
+        let { entities = entities } = world
+
         match system with
-        | Update f -> concatMap entities (f dt entities)
+        | UpdateEntities f ->
+            { world with
+                  entities = concatMap entities (f dt entities) }
+        | UpdateWorld f -> f dt world
 
     let worldUpdate (dt: float) (world: World) =
-        { world with
-              entities = List.fold (runSystem dt) world.entities world.systems }
+        world.systems |> List.fold (runSystem dt) world

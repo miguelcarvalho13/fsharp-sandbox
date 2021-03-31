@@ -21,7 +21,7 @@ module MovementSystem =
         | None -> components
 
     let run =
-        Ecs.Update (fun dt entities ->
+        Ecs.UpdateEntities (fun dt entities ->
             entities
             |> Map.map (fun _ components ->
                 components
