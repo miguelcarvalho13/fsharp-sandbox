@@ -11,9 +11,12 @@ module Ecs =
         | UpdateEntities of (float -> Map<EntityId, List<IComponent>> -> Map<EntityId, List<IComponent>>)
         | UpdateWorld of (float -> World -> World)
 
+    and Consumer = Consumer of (World -> unit)
+
     and World =
         { entities: Map<EntityId, List<IComponent>>
-          systems: List<SystemUpdate> }
+          systems: List<SystemUpdate>
+          consumers: List<Consumer> }
 
     let concatMap a b =
         Map.fold (fun acc key value -> Map.add key value acc) a b
@@ -28,4 +31,10 @@ module Ecs =
         | UpdateWorld f -> f dt world
 
     let worldUpdate (dt: float) (world: World) =
-        world.systems |> List.fold (runSystem dt) world
+        let newWorld =
+            world.systems |> List.fold (runSystem dt) world
+
+        newWorld.consumers
+        |> List.iter (fun (Consumer f) -> f newWorld)
+
+        newWorld

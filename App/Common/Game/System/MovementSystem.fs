@@ -16,14 +16,16 @@ module MovementSystem =
             |> List.map
                 (fun c ->
                     match c with
-                    | :? Position -> (Position (x + dx * s * dt, y + dy * s * dt) :> Ecs.IComponent)
+                    | :? Position -> (Position(x + (dx * s * dt), y + (dy * s * dt)) :> Ecs.IComponent)
                     | _ -> c)
         | None -> components
 
     let run =
-        Ecs.UpdateEntities (fun dt entities ->
-            entities
-            |> Map.map (fun _ components ->
-                components
-                |> queryComponents
-                |> updateComponents dt components))
+        Ecs.UpdateEntities
+            (fun dt entities ->
+                entities
+                |> Map.map
+                    (fun _ components ->
+                        components
+                        |> queryComponents
+                        |> updateComponents dt components))

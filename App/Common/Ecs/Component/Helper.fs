@@ -24,7 +24,13 @@ module Helper =
         | _ -> None
 
     let matchComponent<'a> (components: List<Ecs.IComponent>) =
-        components |> List.tryFind (fun c -> box c :? 'a)
+        components
+        |> List.tryFind (fun c -> box c :? 'a)
+        |> Option.bind (fun c ->
+            match box c with
+            | :? 'a as a -> Some a
+            | _ -> None)
+
 
     let matchComponent2<'a, 'b> (components: List<Ecs.IComponent>) =
         components

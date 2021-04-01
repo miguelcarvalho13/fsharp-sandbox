@@ -5,13 +5,17 @@ open Common.Game.Components
 open Common.Game.Systems
 
 module Game =
-    let world: Ecs.World = {
-        entities =
-            Map.empty
-            |> Map.add (Ecs.EntityId 1) [Position (0.0,0.0); Direction (1.0, 0.5); Speed 0.5]
-        systems = [MovementSystem.run]
-    }
+    let initWorld : Ecs.World =
+        { entities =
+              Map.empty
+              |> Map.add
+                  (Ecs.EntityId 1)
+                  [ Circle { radius = 3.0 }
+                    Position(5.0, 5.0)
+                    Direction(1.0, 0.5)
+                    Speed 1.0
+                    OutputSequence [] ]
+          systems = [ MovementSystem.run; OutputSystem.run ]
+          consumers = [] }
 
-    let run =
-        Ecs.worldUpdate 0.016 world
-
+    let run dt world = Ecs.worldUpdate dt world
